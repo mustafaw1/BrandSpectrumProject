@@ -1,3 +1,22 @@
 from django.shortcuts import render
+# views.py
 
-# Create your views here.
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import InfluencerRegistration
+from .serializers import InfluencerSerializer
+
+class InfluencerListCreateView(APIView):
+    def get(self, request):
+        influencers = InfluencerRegistration.objects.all()
+        serializer = InfluencerSerializer(influencers, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = InfluencerSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
