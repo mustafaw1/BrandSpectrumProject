@@ -16,9 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from influencers.views import InfluencerListCreateView, InfluencerRegistrationView
+from influencers.views import UserListCreateView
+from accounts.views import CustomUserListCreateView, CustomUserDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/register-influencer/', InfluencerListCreateView.as_view(), name='influencer-registration'),
+     path('api/register-influencer/', UserListCreateView.as_view(), name='influencer-registration'),
+    path('users/', CustomUserListCreateView.as_view(), name='user-list-create'),
+    path('users/<int:pk>/', CustomUserDetailView.as_view(), name='user-detail'),
 ]
+
+

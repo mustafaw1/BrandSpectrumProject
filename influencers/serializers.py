@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from .models import Influencer
+from .models import InfluencerRegistration
+from accounts.models import CustomUser
 
 class InfluencerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Influencer
+        model = InfluencerRegistration
         fields = '__all__'
