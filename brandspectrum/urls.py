@@ -18,12 +18,15 @@ from django.contrib import admin
 from django.urls import path
 from influencers.views import UserListCreateView
 from accounts.views import CustomUserListCreateView, CustomUserDetailView
+from campaigns.views import CampaignListView, CampaignDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-     path('api/register-influencer/', UserListCreateView.as_view(), name='influencer-registration'),
-    path('users/', CustomUserListCreateView.as_view(), name='user-list-create'),
-    path('users/<int:pk>/', CustomUserDetailView.as_view(), name='user-detail'),
+    path('api/register-influencer/', UserListCreateView.as_view(), name='influencer-registration'),
+    path('api/users/', CustomUserListCreateView.as_view(), name='user-list-create'),
+    path('api/users/<int:pk>/', CustomUserDetailView.as_view(), name='user-detail'),
+    path('api/campaigns/', CampaignListView.as_view(), name='campaign-list'),
+    path('api/campaigns/<int:pk>/', CampaignDetailView.as_view(), name='campaign-detail'),
 ]
 
 
