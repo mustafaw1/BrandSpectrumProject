@@ -8,6 +8,7 @@ class Campaign(models.Model):
     end_date = models.DateField()
     image = models.ImageField(upload_to='campaign_images/') 
     brand_manager = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    is_public = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
