@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Influencer Dashboard</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome, {{ influencer.name }}</h1>
+        <p>Age: {{ influencer.age }}</p>
+        <p>Category: {{ influencer.category }}</p>
+        <!-- Add more influencer information here -->
+    </header>
+
+    <main>
+        <section>
+            <h2>Your Campaigns</h2>
+            <ul>
+                {% for campaign in campaigns %}
+                    <li>
+                        <h3>{{ campaign.title }}</h3>
+                        <p>{{ campaign.description }}</p>
+                        <p>Status: {{ campaign.status }}</p>
+                        <p>Start Date: {{ campaign.start_date }}</p>
+                        <p>End Date: {{ campaign.end_date }}</p>
+                        <p>Media Type: {{ campaign.media_type }}</p>
+                        
+                        <!-- Display campaign image -->
+                        {% if campaign.image %}
+                            <img src="{{ campaign.image.url }}" alt="{{ campaign.title }} Image">
+                        {% endif %}
+
+                        <!-- Add more campaign details here -->
+                        {% if campaign.file %}
+                            <p><a href="{{ campaign.file.url }}" download>Download Media</a></p>
+                        {% endif %}
+
+                        <p>Feedback: {{ campaign.feedback }}</p>
+                    </li>
+                {% empty %}
+                    <li>No campaigns available.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <!-- Footer content goes here -->
+    </footer>
+</body>
+</html>

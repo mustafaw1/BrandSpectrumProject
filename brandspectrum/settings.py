@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-98@m2i+m3tf8=u!l8w2qhn2se*z3wjx$jz_)!gbgca-6u_eja#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -52,8 +52,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
 ]
-
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 ROOT_URLCONF = 'brandspectrum.urls'
 
 TEMPLATES = [
@@ -71,8 +72,18 @@ TEMPLATES = [
         },
     },
 ]
+LOGIN_REDIRECT_URL = 'influencer_registration'
+LOGIN_URL = 'login'  
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 WSGI_APPLICATION = 'brandspectrum.wsgi.application'
 

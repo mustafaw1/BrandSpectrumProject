@@ -7,8 +7,7 @@ from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 User = get_user_model()
-from .permission import IsBrandManagerPermission
-from django.db.models import Q
+
 
 
 
@@ -22,7 +21,7 @@ class CampaignCreateView(generics.CreateAPIView):
     serializer_class = CampaignSerializer
 
 
-from django.db.models import Q
+
 
 class CampaignListView(generics.ListAPIView):
     serializer_class = CampaignSerializer
