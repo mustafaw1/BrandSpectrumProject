@@ -72,8 +72,13 @@ TEMPLATES = [
         },
     },
 ]
-LOGIN_REDIRECT_URL = 'influencer_registration'
-LOGIN_URL = 'login'  
+LOGIN_REDIRECT_URL = 'influencer-dashboard'
+
+# For influencer login
+LOGIN_URL = 'login'
+
+# For brand manager login
+BRAND_MANAGER_LOGIN_URL = 'brand_manager_login'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from accounts.choices import USER_TYPE_CHOICES
 from campaigns.models import Campaign 
+from brandmanagers.models import BrandManager
+
 
 class InfluencerRegistration(models.Model):
     user_type = models.CharField(max_length=15, choices=USER_TYPE_CHOICES, default='brand_spectrum')
@@ -23,13 +25,14 @@ class InfluencerRegistration(models.Model):
     isRegistered = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        # Check if the user associated with this registration is an influencer
         if self.user and self.user.is_influencer:
-            # Update the is_influencer_registered field of the associated CustomUser
             self.user.is_influencer_registered = True
             self.user.save()  
 
-        super().save(*args, **kwargs)  #
+        super().save(*args, **kwargs)  
+    
+    
+
     def __str__(self):
         return self.name
 

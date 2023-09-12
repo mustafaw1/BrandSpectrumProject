@@ -14,6 +14,7 @@ from campaigns.models import Campaign
 from django.contrib.auth import get_user_model
 from rest_framework import generics, status
 from rest_framework.response import Response
+from brandspectrum import settings
 
 def influencer_signup(request):
     if request.method == 'POST':
@@ -40,7 +41,7 @@ def influencer_signup(request):
 
 
 
-class CustomLoginView(LoginView):
+class InfluencerLoginView(LoginView):
     def form_valid(self, form):
         if self.request.user.is_authenticated:
             print("Redirecting to influencer_registration")
@@ -48,16 +49,10 @@ class CustomLoginView(LoginView):
         else:
             print("User is not an influencer")
             messages.info(self.request, 'You are not an influencer.')
-            return redirect('login')
+            return redirect('signup')
         return super().form_valid(form) 
 
     
-
-# class Influencer_Registration(generics.ListCreateAPIView):
-#     serializer_class = InfluencerSerializer
-#     def get_queryset(self):
-#         queryset = InfluencerRegistration.objects.filter(isRegistered=False)
-#         return queryset
 
 class Influencer_Registration(generics.CreateAPIView):
     serializer_class = InfluencerSerializer
@@ -74,7 +69,7 @@ class Influencer_Registration(generics.CreateAPIView):
 
         headers = self.get_success_headers(serializer.data)
 
-        # Update isRegistered if registration is complete
+    
         if is_registration_complete:
             influencer = InfluencerRegistration.objects.get(user=request.user)
             influencer.isRegistered = True
@@ -87,20 +82,21 @@ class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = InfluencerSerializer
 
 
-
-@login_required
+@login_required(login_url=settings.LOGIN_URL) 
 def influencer_dashboard(request):
     try:
-        user = request.user  
-        influencer_registration = user.influencer_registration_user  
-        campaigns = Campaign.objects.filter(influencers_registration=request.user.influencer_registration_user)
-        data = {'influencer': influencer_registration, 'campaigns': campaigns}
-        return render(request, 'registration/influencer_dashboard.html', data)
+        user = request.user
+        if user.is_influencer and user.is_influencer_registered:
+            influencer_registration = user.influencer_registration_user
+            campaigns = Campaign.objects.filter(influencers_registration=request.user.influencer_registration_user)
+            data = {'influencer': influencer_registration, 'campaigns': campaigns}
+            return render(request, 'registration/influencer_dashboard.html', data)
+        else:
+            messages.error(request, 'You are not an influencer or not registered as an influencer.')
+            return redirect('login')
     except get_user_model().DoesNotExist:
         messages.error(request, 'User not found.')
         return redirect('login')
-
-
 
 
 

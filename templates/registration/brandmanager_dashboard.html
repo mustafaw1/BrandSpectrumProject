@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Brand Manager Dashboard</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome, {{ user.username }}</h1>
+    </header>
+
+    <main>
+        <form method="get">
+            <input type="text" name="influencer_name" placeholder="Search by Influencer Name">
+            <button type="submit">Search</button>
+        </form>
+
+        <section>
+            <h2>All Campaigns</h2>
+            <ul>
+                {% for campaign in all_campaigns %}
+                    <li>
+                        <h3>{{ campaign.title }}</h3>
+                        <p>Description: {{ campaign.description }}</p>
+                        <!-- Add more campaign details here -->
+                    </li>
+                {% empty %}
+                    <li>No campaigns available.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section>
+            <h2>Active Campaigns</h2>
+            <!-- Display active campaigns here -->
+            <!-- You can iterate over active_campaigns and display campaign details -->
+        </section>
+
+        <section>
+            <h2>Completed Campaigns</h2>
+            <!-- Display completed campaigns here -->
+            <!-- You can iterate over completed_campaigns and display campaign details -->
+        </section>
+
+        <section>
+            <h2>Stopped Campaigns</h2>
+            <!-- Display stopped campaigns here -->
+            <!-- You can iterate over stopped_campaigns and display campaign details -->
+        </section>
+
+        <section>
+            <h2>On-Hold Campaigns</h2>
+            <!-- Display on-hold campaigns here -->
+            <!-- You can iterate over on_hold_campaigns and display campaign details -->
+        </section>
+
+        <section>
+            <h2>Pending Influencer Content Approval</h2>
+            <!-- Display influencer content awaiting approval here -->
+            <!-- You can iterate over pending_approval and display influencer content details -->
+        </section>
+    </main>
+
+    <footer>
+        <!-- Footer content goes here -->
+    </footer>
+</body>
+</html>

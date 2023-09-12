@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from .choices import USER_TYPE_CHOICES 
+from brandmanagers.models import BrandManager
 
 
 
@@ -37,12 +38,16 @@ class CustomUser(AbstractBaseUser):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
     is_brand_manager = models.BooleanField(default=False)
     is_influencer = models.BooleanField(default=False)
     is_super_admin = models.BooleanField(default=False)
+    last_login = models.DateTimeField(null=True, blank=True)
 
     influencer_profile = models.OneToOneField('influencers.InfluencerRegistration', on_delete=models.CASCADE, related_name='influencer_profile_user', null=True)
     is_influencer_registered = models.BooleanField(default=False)
+
+    brand_manager_profile = models.OneToOneField('brandmanagers.BrandManager', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.username
