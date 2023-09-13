@@ -15,8 +15,6 @@ class BrandManagerSignupForm(UserCreationForm):
     company_name = forms.CharField(max_length=255, required=True)
     user_type = forms.CharField(max_length=15, required=True, widget=forms.Select(choices=USER_TYPE_CHOICES))
 
-
-
     class Meta:
         model = CustomUser  
         fields = ['username', 'email', 'password1', 'password2', 'company_name']

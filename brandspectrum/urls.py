@@ -40,7 +40,7 @@ urlpatterns = [
     path('api/influencer_dashboard/', influencer_dashboard, name='influencer-dashboard'),
     path('api/logout_influencer/', auth_views.LogoutView.as_view(), name='logout_influencer'),
     path('api/brandmanager_signup/', brand_manager_signup, name='brand_manager_signup'),
-    path('api/brandmanager_login/', BrandManagerLoginView.as_view(), name='brand_manager_login'),
+    path('api/brandmanager_login/', BrandManagerLoginView.as_view(template_name='registration/brandmanager_login.html'), name='brand_manager_login'),
     path('api/logout_brandmanager/', auth_views.LogoutView.as_view(), name='logout_brandmanager'),
     path('api/brandmanager_dashboard/', brand_manager_dashboard, name='brandmanager_dashboard')
 ]

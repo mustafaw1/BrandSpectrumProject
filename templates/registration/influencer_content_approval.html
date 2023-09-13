@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Approval</title>
+</head>
+<body>
+    <h1>Content Approval</h1>
+    <p>Influencer: {{ content.influencer.name }}</p>
+    <p>Campaign: {{ content.campaign.title }}</p>
+    <p>Content: {{ content.content }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <label for="approval_status">Approval Status:</label>
+        <select name="approval_status" id="approval_status">
+            <option value="approve">Approve</option>
+            <option value="reject">Reject</option>
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
