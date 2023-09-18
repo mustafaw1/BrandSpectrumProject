@@ -10,6 +10,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from campaigns.models import Campaign, InfluencerContentApproval
 from django.contrib.auth.views import LoginView 
 from brandspectrum import settings
+from django.core.mail import send_mail
+from campaigns.forms import ContentApprovalForm
+from campaigns.forms import ContentSubmissionForm
+from django.http import HttpResponse
+from influencers.models import InfluencerRegistration
+from brandmanagers.models import BrandManager
 
 def brand_manager_signup(request):
     if request.method == 'POST':
@@ -88,25 +94,67 @@ def brand_manager_dashboard(request):
     return render(request, 'registration/brandmanager_dashboard.html', context)
 
 
-def content_approval(request, content_id):
-    # Ensure that the user is a brand manager
+
+@login_required(login_url=settings.LOGIN_URL) 
+def content_submission(request):
+    if request.method == 'POST':
+        form = ContentSubmissionForm(request.POST, request.FILES)
+        if form.is_valid():
+            submission = form.save(commit=False)
+            influencer_user = request.user
+            submission.influencer = influencer_user
+            submission.save()
+            influencer_email = request.user.email
+            print(influencer_email)
+            influencer_subject = 'Content Submission Confirmation'
+            influencer_message = 'Your content submission has been received and is awaiting approval.'
+            send_mail(influencer_subject, influencer_message, settings.EMAIL_HOST_USER, [influencer_email], fail_silently=True)
+            # Notify the selected brand manager (retrieve brand manager's email from the influencer_registration)
+            try:
+                brand_manager_email = Campaign.brand_manager.name
+                print(brand_manager_email)
+                brand_manager_subject = 'New Content Submission Request'
+                brand_manager_message = f'Influencer {request.user.username} has submitted new content for approval. Check the dashboard for details.'
+                send_mail(brand_manager_subject, brand_manager_message, settings.EMAIL_HOST_USER, [brand_manager_email], fail_silently=True)
+
+                messages.success(request, 'Content submitted successfully. Awaiting approval.')
+            except AttributeError:
+                messages.error(request, 'Error: Brand manager email not found.')
+
+            return HttpResponse('Brand manager email is not found')
+    else:
+        form = ContentSubmissionForm()
+
+    context = {'form': form}
+    return render(request, 'registration/influencer_contentsubmission.html', context)
+
+
+           
+    
+
+
+@login_required(login_url=settings.BRAND_MANAGER_LOGIN_URL)
+def content_approval(request):
     if not request.user.is_brand_manager:
         return HttpResponseForbidden("Access Denied")
 
-    content = get_object_or_404(InfluencerContentApproval, pk=content_id)
-
-    # Handle content approval
     if request.method == 'POST':
-        is_approved = request.POST.get('approval_status') == 'approve'
-        content.is_approved = is_approved
-        content.save()
-
-        # Redirect back to the content approval dashboard
-        return redirect('brandmanager_dashboard')
+        form = ContentApprovalForm(request.POST)
+        if form.is_valid():
+            # Process the form data and approve/reject the content
+            is_approved = form.cleaned_data['approval_status'] == 'approve'
+            content_id = form.cleaned_data['content_id']
+            
+            content = get_object_or_404(InfluencerContentApproval, pk=content_id)
+            content.is_approved = is_approved
+            content.save()
+            return redirect('brandmanager_dashboard')
+    else:
+        # Handle GET request here if needed
+        form = ContentApprovalForm()
 
     context = {
-        'content': content,
+        'form': form,
     }
-
-    return render(request, 'content_approval.html', context)
+    return render(request, 'registration/influencer_content_approval.html', context)
 

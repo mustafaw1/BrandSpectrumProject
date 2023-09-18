@@ -47,5 +47,24 @@ class InfluencerContentApproval(models.Model):
 
     def __str__(self):
         return f"Content from {self.influencer} for {self.campaign} - Approved: {self.is_approved}"
+    
+
+class InfluencerContentSubmission(models.Model):
+    influencer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    content_type = models.CharField(max_length=20, choices=[
+        ('text', 'Text'),
+        ('image', 'Image'),
+        ('video', 'Video'),
+    ])
+    content_text = models.TextField(blank=True, null=True)  # For text content
+    content_image = models.ImageField(upload_to='content_images/', blank=True, null=True)  # For images
+    content_video = models.FileField(upload_to='content_videos/', blank=True, null=True)  # For videos
+    is_approved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Content from {self.influencer} - Type: {self.content_type} - Approved: {self.is_approved}"
+
+
 
 

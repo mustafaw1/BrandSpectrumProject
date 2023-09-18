@@ -25,9 +25,8 @@ def influencer_signup(request):
             user.save()  
             login(request, user)
             messages.success(request, 'You have successfully registered as an influencer.')
-            return redirect('login')  # Redirect to influencer dashboard
+            return redirect('login')  
         else:
-            # Handle form errors and return a bad request response
             error_messages = []
             for field, errors in form.errors.items():
                 for error in errors:
@@ -43,7 +42,7 @@ def influencer_signup(request):
 
 class InfluencerLoginView(LoginView):
     def form_valid(self, form):
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated and self.request.user.is_influencer:
             print("Redirecting to influencer_registration")
             return redirect('influencer_registration')
         else:
@@ -86,7 +85,8 @@ class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 def influencer_dashboard(request):
     try:
         user = request.user
-        if user.is_influencer and user.is_influencer_registered:
+        print(user)
+        if request.user.is_influencer and request.user.is_influencer_registered :
             influencer_registration = user.influencer_registration_user
             campaigns = Campaign.objects.filter(influencers_registration=request.user.influencer_registration_user)
             data = {'influencer': influencer_registration, 'campaigns': campaigns}

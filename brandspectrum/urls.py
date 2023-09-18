@@ -25,7 +25,7 @@ from influencers.views import influencer_signup
 from influencers.views import InfluencerLoginView
 from brandmanagers.views import brand_manager_dashboard
 from django.contrib.auth import views as auth_views
-from brandmanagers.views import brand_manager_signup, BrandManagerLoginView
+from brandmanagers.views import brand_manager_signup, BrandManagerLoginView, content_approval, content_submission
 
 
 urlpatterns = [
@@ -42,7 +42,9 @@ urlpatterns = [
     path('api/brandmanager_signup/', brand_manager_signup, name='brand_manager_signup'),
     path('api/brandmanager_login/', BrandManagerLoginView.as_view(template_name='registration/brandmanager_login.html'), name='brand_manager_login'),
     path('api/logout_brandmanager/', auth_views.LogoutView.as_view(), name='logout_brandmanager'),
-    path('api/brandmanager_dashboard/', brand_manager_dashboard, name='brandmanager_dashboard')
+    path('api/brandmanager_dashboard/', brand_manager_dashboard, name='brandmanager_dashboard'),
+    path('api/influencer_contentsubmission/', content_submission, name='content_submission'),
+    path('api/content_approval/', content_approval, name='content_approval'),
 ]
 
 

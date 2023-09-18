@@ -44,7 +44,7 @@ class CustomUser(AbstractBaseUser):
     is_super_admin = models.BooleanField(default=False)
     last_login = models.DateTimeField(null=True, blank=True)
 
-    influencer_profile = models.OneToOneField('influencers.InfluencerRegistration', on_delete=models.CASCADE, related_name='influencer_profile_user', null=True)
+    influencer_profile = models.OneToOneField('influencers.InfluencerRegistration', on_delete=models.CASCADE, related_name='user_influencer_profile', null=True)
     is_influencer_registered = models.BooleanField(default=False)
 
     brand_manager_profile = models.OneToOneField('brandmanagers.BrandManager', on_delete=models.CASCADE, null=True)

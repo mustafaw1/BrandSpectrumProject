@@ -20,7 +20,7 @@ class InfluencerRegistration(models.Model):
 
     campaigns = models.ManyToManyField(Campaign, related_name='influencers_registration')
     
-    user = models.OneToOneField('accounts.CustomUser', on_delete=models.CASCADE, related_name='influencer_registration_user', null=True)
+    user = models.OneToOneField('accounts.CustomUser', on_delete=models.CASCADE, related_name='influencer_profile_user', null=True)
 
     isRegistered = models.BooleanField(default=False)
 
