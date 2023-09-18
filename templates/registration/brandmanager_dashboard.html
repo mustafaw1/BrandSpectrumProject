@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brand Manager Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ user.username }}</h1>
+
+    <form method="GET">
+        <label for="influencer_name">Search for Influencer:</label>
+        <input type="text" id="influencer_name" name="influencer_name" value="{{ influencer_name }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Content Approval Section -->
+<h2>Pending Content Approval</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Influencer</th>
+            <th>Campaign</th>
+            <th>Content</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for content in pending_content %}
+        <tr>
+            <td>{{ content.influencer.name }}</td>
+            <td>{{ content.campaign.title }}</td>
+            <td>{{ content.content }}</td>
+            <td>
+                {% if content.is_approved %}
+                    Approved
+                {% else %}
+                    Pending
+                {% endif %}
+            </td>
+            <td>
+                {% if not content.is_approved %}
+                    <a href="{% url 'approve_content' content.id %}">Approve</a>
+                    <a href="{% url 'reject_content' content.id %}">Reject</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+    <!-- Search Results Section -->
+    {% if influencer_name %}
+        <h2>Influencer: {{ influencer_name }}</h2>
+        <h3>Active Campaigns</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Campaign Title</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Status</th>
+                    <!-- Add more fields here -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for campaign in active_campaigns %}
+                    <tr>
+                        <td>{{ campaign.title }}</td>
+                        <td>{{ campaign.start_date }}</td>
+                        <td>{{ campaign.end_date }}</td>
+                        <td>{{ campaign.description }}</td>
+                        <td><img src="{{ campaign.image.url }}" alt="{{ campaign.title }}"></td>
+                        <td>{{ campaign.status }}</td>
+                        <!-- Add more fields here -->
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">No active campaigns available for this influencer.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Completed Campaigns</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Campaign Title</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Status</th>
+                    <!-- Add more fields here -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for campaign in completed_campaigns %}
+                    <tr>
+                        <td>{{ campaign.title }}</td>
+                        <td>{{ campaign.start_date }}</td>
+                        <td>{{ campaign.end_date }}</td>
+                        <td>{{ campaign.description }}</td>
+                        <td><img src="{{ campaign.image.url }}" alt="{{ campaign.title }}"></td>
+                        <td>{{ campaign.status }}</td>
+                        <!-- Add more fields here -->
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">No completed campaigns available for this influencer.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Inactive Campaigns</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Campaign Title</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Status</th>
+                    <!-- Add more fields here -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for campaign in inactive_campaigns %}
+                    <tr>
+                        <td>{{ campaign.title }}</td>
+                        <td>{{ campaign.start_date }}</td>
+                        <td>{{ campaign.end_date }}</td>
+                        <td>{{ campaign.description }}</td>
+                        <td><img src="{{ campaign.image.url }}" alt="{{ campaign.title }}"></td>
+                        <td>{{ campaign.status }}</td>
+                        <!-- Add more fields here -->
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">No inactive campaigns available for this influencer.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+        <!-- Display All Campaigns Section -->
+        <h2>All Campaigns</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Campaign Title</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Status</th>
+                    <!-- Add more fields here -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for campaign in all_campaigns %}
+                    <tr>
+                        <td>{{ campaign.title }}</td>
+                        <td>{{ campaign.start_date }}</td>
+                        <td>{{ campaign.end_date }}</td>
+                        <td>{{ campaign.description }}</td>
+                        <td><img src="{{ campaign.image.url }}" alt="{{ campaign.title }}"></td>
+                        <td>{{ campaign.status }}</td>
+                        <!-- Add more fields here -->
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">No campaigns available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <!-- Add other sections and content as needed -->
+
+</body>
+</html>

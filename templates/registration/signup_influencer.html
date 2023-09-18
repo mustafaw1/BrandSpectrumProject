@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Influencer Sign-up</title>
+</head>
+<body>
+    <h1>Influencer Sign-up</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.username.label_tag }} {{ form.username }}
+        {{ form.email.label_tag }} {{ form.email }}
+        {{ form.password1.label_tag }} {{ form.password1 }}
+        {{ form.password2.label_tag }} {{ form.password2 }}
+        {{ form.user_type.label_tag }} {{ form.user_type }}  
+        <button type="submit">Sign Up</button>
+    </form>
+</body>
+</html>
+

@@ -1,0 +1,31 @@
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Django",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "runserver",
+                "--noreload",   // Add this flag to prevent auto-reloading in the terminal
+                "8001"          // Specify your desired port number here
+            ],
+            "django": true,
+            "stopOnEntry": false,
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "."
+                }
+            ],
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "BrandSpectrumProject.settings"
+            },
+            "envFile": "${workspaceFolder}/.env",  // If you use environment variables in a file
+            "preLaunchTask": "python manage.py migrate",  // Optional: Run migrations before starting
+            "postDebugTask": "python manage.py runserver",  // Optional: Start the server after debugging
+        }
+    ]
+}
