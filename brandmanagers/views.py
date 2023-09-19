@@ -7,12 +7,12 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from accounts.forms import BrandManagerSignupForm
 from django.shortcuts import render, get_object_or_404, redirect
-from campaigns.models import Campaign, InfluencerContentApproval
+from campaigns.models import Campaign, InfluencerContentApproval, InfluencerContentSubmission
 from django.contrib.auth.views import LoginView 
 from brandspectrum import settings
 from django.core.mail import send_mail
 from campaigns.forms import ContentApprovalForm
-from campaigns.forms import ContentSubmissionForm
+from campaigns.forms import ContentSubmissionForm, RejectionForm
 from django.http import HttpResponse
 from influencers.models import InfluencerRegistration
 from brandmanagers.models import BrandManager
@@ -43,13 +43,14 @@ def brand_manager_signup(request):
 class BrandManagerLoginView(LoginView):
     def form_valid(self, form):
         if self.request.user.is_authenticated and self.request.user.is_brand_manager:
-            messages.success(self.request, 'You are logged in as a brand manager.')
             return redirect('brandmanager_dashboard')
-        else:
-            print('invalid')
-            messages.error(self.request, 'Invalid login credentials for brand manager.')
-            return redirect('brand_manager_signup')
-        return super().form_valid(form) 
+        messages.error(self.request, 'Invalid credentials.')
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Invalid credentials.')
+        print('invalid')
+        return super().form_invalid(form)
 
 
 
@@ -95,33 +96,32 @@ def brand_manager_dashboard(request):
 
 
 
-@login_required(login_url=settings.LOGIN_URL) 
+@login_required(login_url=settings.LOGIN_URL)
 def content_submission(request):
     if request.method == 'POST':
         form = ContentSubmissionForm(request.POST, request.FILES)
         if form.is_valid():
             submission = form.save(commit=False)
-            influencer_user = request.user
-            submission.influencer = influencer_user
+            
+            submission.influencer = request.user
+
+            brand_manager_email = form.cleaned_data.get('brand_manager_email')
+
             submission.save()
+
+            # Notify the influencer
             influencer_email = request.user.email
-            print(influencer_email)
             influencer_subject = 'Content Submission Confirmation'
             influencer_message = 'Your content submission has been received and is awaiting approval.'
             send_mail(influencer_subject, influencer_message, settings.EMAIL_HOST_USER, [influencer_email], fail_silently=True)
-            # Notify the selected brand manager (retrieve brand manager's email from the influencer_registration)
-            try:
-                brand_manager_email = Campaign.brand_manager.name
-                print(brand_manager_email)
-                brand_manager_subject = 'New Content Submission Request'
-                brand_manager_message = f'Influencer {request.user.username} has submitted new content for approval. Check the dashboard for details.'
-                send_mail(brand_manager_subject, brand_manager_message, settings.EMAIL_HOST_USER, [brand_manager_email], fail_silently=True)
 
-                messages.success(request, 'Content submitted successfully. Awaiting approval.')
-            except AttributeError:
-                messages.error(request, 'Error: Brand manager email not found.')
+            # Notify the brand manager (use the provided email)
+            brand_manager_subject = 'New Content Submission Request'
+            brand_manager_message = f'Influencer {request.user.username} has submitted new content for approval. Check the dashboard for details.'
+            send_mail(brand_manager_subject, brand_manager_message, settings.EMAIL_HOST_USER, [brand_manager_email], fail_silently=True)
 
-            return HttpResponse('Brand manager email is not found')
+            messages.success(request, 'Content submitted successfully. Awaiting approval.')
+            return HttpResponse('Content submitted successfully. Awaiting approval.')
     else:
         form = ContentSubmissionForm()
 
@@ -129,32 +129,44 @@ def content_submission(request):
     return render(request, 'registration/influencer_contentsubmission.html', context)
 
 
-           
-    
 
 
 @login_required(login_url=settings.BRAND_MANAGER_LOGIN_URL)
 def content_approval(request):
-    if not request.user.is_brand_manager:
-        return HttpResponseForbidden("Access Denied")
+    pending_submissions = InfluencerContentSubmission.objects.filter(is_approved=False)
+    rejection_form = RejectionForm()
 
     if request.method == 'POST':
-        form = ContentApprovalForm(request.POST)
-        if form.is_valid():
-            # Process the form data and approve/reject the content
-            is_approved = form.cleaned_data['approval_status'] == 'approve'
-            content_id = form.cleaned_data['content_id']
-            
-            content = get_object_or_404(InfluencerContentApproval, pk=content_id)
-            content.is_approved = is_approved
-            content.save()
-            return redirect('brandmanager_dashboard')
-    else:
-        # Handle GET request here if needed
-        form = ContentApprovalForm()
+        submission_id = request.POST.get('submission_id')
+        action = request.POST.get('action')
 
-    context = {
-        'form': form,
-    }
+        submission = get_object_or_404(InfluencerContentSubmission.objects.all(), pk=submission_id)
+
+        if action == 'approve':
+            submission.is_approved = True
+            submission.save()
+
+            influencer_email = submission.influencer.email
+            influencer_subject = 'Content Approved'
+            influencer_message = 'Your content submission has been approved.'
+            send_mail(influencer_subject, influencer_message, settings.EMAIL_HOST_USER, [influencer_email], fail_silently=True)
+
+            messages.success(request, 'Content approved successfully.')
+
+        elif action == 'reject':
+            rejection_form = RejectionForm(request.POST)
+
+            if rejection_form.is_valid():
+                submission.is_approved = False
+                submission.save()
+
+                influencer_email = submission.influencer.email
+                influencer_subject = 'Content Rejected'
+                influencer_message = f'Your content submission has been rejected. Reason: {rejection_form.cleaned_data["rejection_reason"]}'
+                send_mail(influencer_subject, influencer_message, settings.EMAIL_HOST_USER, [influencer_email], fail_silently=True)
+                messages.success(request, 'Content rejected successfully.')
+            else:
+                messages.error(request, 'Invalid rejection form. Please provide a reason.')
+
+    context = {'pending_submissions': pending_submissions, 'rejection_form': rejection_form}
     return render(request, 'registration/influencer_content_approval.html', context)
-

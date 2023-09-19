@@ -73,7 +73,7 @@ TEMPLATES = [
         },
     },
 ]
-# LOGIN_REDIRECT_URL = 'influencer-dashboard'
+LOGIN_REDIRECT_URL = 'influencer-dashboard'
 
 # For influencer login
 LOGIN_URL = 'login'

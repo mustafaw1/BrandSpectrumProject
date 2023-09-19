@@ -1,34 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Content Approval</title>
-</head>
-<body>
-    <h1>Content Approval</h1>
-
-    <div class="content">
-        {% if content.content_type == 'text' %}
-            <p>{{ content.content }}</p>
-        {% elif content.content_type == 'image' %}
-            <img src="{{ content.content_url }}" alt="Image">
-        {% elif content.content_type == 'media' %}
-            <!-- Add code to embed media here (e.g., video or audio) -->
-        {% else %}
-            <p>Unsupported content type</p>
-        {% endif %}
-    </div>
-
-    <form method="post">
-        {% csrf_token %}
-        <label for="approval_status">Approval Status:</label>
-        <select name="approval_status" id="approval_status">
-            <option value="approve">Approve</option>
-            <option value="reject">Reject</option>
-        </select>
-        <button type="submit">Submit Approval</button>
-    </form>
-
-    <a href="{% url 'brandmanager_dashboard' %}">Back to Dashboard</a>
-</body>
-</html>
+{% block content %}
+  <h1>Pending Content Approval</h1>
+  
+  {% if pending_submissions %}
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Influencer</th>
+          <th>Content Type</th>
+          <th>Content Text</th>
+          <th>Content Image</th>
+          <th>Content Video</th>
+          <th>Is Approved</th>
+          <th>Created At</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for submission in pending_submissions %}
+          <tr>
+            <td>{{ submission.id }}</td>
+            <td>{{ submission.influencer }}</td>
+            <td>{{ submission.content_type }}</td>
+            <td>{{ submission.content_text }}</td>
+            <td>
+              {% if submission.content_image %}
+                <img src="{{ submission.content_image.url }}" alt="Content Image" width="150">
+              {% endif %}
+            </td>
+            <td>
+              {% if submission.content_video %}
+                <video controls width="300">
+                  <source src="{{ submission.content_video.url }}" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              {% endif %}
+            </td>
+            <td>{{ submission.is_approved }}</td>
+            <td>{{ submission.created_at }}</td>
+            <td>
+              <form method="post" action="{% url 'content_approval' %}">
+                {% csrf_token %}
+                <input type="hidden" name="submission_id" value="{{ submission.id }}">
+                <input type="hidden" name="action" value="approve">
+                <input type="submit" value="Approve">
+              </form>
+              <form method="post" action="{% url 'content_approval' %}">
+                {% csrf_token %}
+                <input type="hidden" name="submission_id" value="{{ submission.id }}">
+                <input type="hidden" name="action" value="reject">
+                <label for="rejection_reason">Rejection Reason:</label>
+                <textarea id="rejection_reason" name="rejection_reason" rows="4" cols="50" required></textarea><br>
+                <input type="submit" value="Reject">
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No pending content submissions.</p>
+  {% endif %}
+  
+  <a href="{% url 'brandmanager_dashboard' %}">Back to Dashboard</a>
+{% endblock %}

@@ -5,7 +5,7 @@ from accounts.choices import USER_TYPE_CHOICES
 
 class BrandManager(models.Model):
     name = models.CharField(max_length=225)
-    email = models.EmailField(max_length=225)
+    email = models.EmailField(max_length=225, null=True)
     company_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)

@@ -56,9 +56,9 @@ class InfluencerContentSubmission(models.Model):
         ('image', 'Image'),
         ('video', 'Video'),
     ])
-    content_text = models.TextField(blank=True, null=True)  # For text content
-    content_image = models.ImageField(upload_to='content_images/', blank=True, null=True)  # For images
-    content_video = models.FileField(upload_to='content_videos/', blank=True, null=True)  # For videos
+    content_text = models.TextField(blank=True, null=True)
+    content_image = models.ImageField(upload_to='content_images/', blank=True, null=True)  
+    content_video = models.FileField(upload_to='content_videos/', blank=True, null=True)  
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
 

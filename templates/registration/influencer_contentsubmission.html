@@ -6,14 +6,12 @@
 </head>
 <body>
     <h1>Content Submission</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.content_type.label_tag }} {{ form.content_type }}
-        {{ form.content_text.label_tag }} {{ form.content_text }}
-        {{ form.content_image.label_tag }} {{ form.content_image }}
-        {{ form.content_video.label_tag }} {{ form.content_video }}
-        <button type="submit">Submit</button>
-    </form>
     
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+    </form>
 </body>
 </html>
+
