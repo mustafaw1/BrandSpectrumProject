@@ -1,0 +1,47 @@
+{% block content %}
+  <h1>Manage Brand Managers/Clients</h1>
+
+  <!-- Brand Manager List -->
+  <h2>Brand Manager List</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Company Name</th>
+        <th>Phone Number</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for brand_manager in brand_managers %}
+        <tr>
+          <td>{{ brand_manager.name }}</td>
+          <td>{{ brand_manager.email }}</td>
+          <td>{{ brand_manager.company_name }}</td>
+          <td>{{ brand_manager.phone_number }}</td>
+          <td>
+            <a href="{% url 'manage_brand_managers' %}?pk={{ brand_manager.id }}">Edit</a>
+            <form method="post" action="{% url 'manage_brand_managers' %}">
+              {% csrf_token %}
+              <input type="hidden" name="brand_manager_id" value="{{ brand_manager.id }}">
+              <button type="submit" name="delete">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5">No Brand Managers/Clients found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Add Brand Manager Form -->
+  <h2>Add Brand Manager/Client</h2>
+  <form method="post" action="{% url 'manage_brand_managers' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Brand Manager/Client</button>
+  </form>
+{% endblock %}

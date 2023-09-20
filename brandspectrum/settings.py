@@ -80,6 +80,10 @@ LOGIN_URL = 'login'
 
 # For brand manager login
 BRAND_MANAGER_LOGIN_URL = 'brand_manager_login'
+# For super admin login
+SUPERADMIN_LOGIN_URL = 'superadmin_login'
+
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
