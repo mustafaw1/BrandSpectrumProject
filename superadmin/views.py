@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 
 
 class SuperAdminSignupView(View):
-    template_name = 'registration/superadmin_signup.html'  # Create this template
+    template_name = 'registration/superadmin_signup.html'  
     
     def get(self, request):
         form = SuperAdminSignupForm()
@@ -24,16 +24,16 @@ class SuperAdminSignupView(View):
         form = SuperAdminSignupForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_super_admin = True  # Set the is_super_admin field to True
+            user.is_super_admin = True 
             user.save()
             login(request, user)
-            return redirect('superadmin_dashboard')  # Redirect to the Super Admin dashboard
+            return redirect('superadmin_dashboard')  
         return render(request, self.template_name, {'form': form})
 
     
 
 
-@login_required(login_url=settings.SUPERADMIN_LOGIN_URL)
+# @login_required(login_url=settings.SUPERADMIN_LOGIN_URL)
 def superadmin_dashboard(request):
     # Existing code to fetch data for active campaigns, completed campaigns,
     # registered influencers, and non-registered influencers.
@@ -77,7 +77,7 @@ def superadmin_dashboard(request):
     if request.method == 'POST':
         response = manage_brand_managers(request)
         if response:
-            return response  # Redirect if needed.
+            return response  
 
     return render(request, 'registration/superadmin_dashboard.html', context)
 
