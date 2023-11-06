@@ -26,33 +26,91 @@ from influencers.views import InfluencerLoginView
 from brandmanagers.views import brand_manager_dashboard
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LoginView, LogoutView
-from superadmin.views import superadmin_dashboard, manage_brand_managers, SuperAdminSignupView
-from brandmanagers.views import brand_manager_signup, BrandManagerLoginView, content_approval, content_submission
+from superadmin.views import (
+    superadmin_dashboard,
+    manage_brand_managers,
+    SuperAdminSignupView,
+)
+from brandmanagers.views import (
+    brand_manager_signup,
+    BrandManagerLoginView,
+    content_approval,
+    content_submission,
+)
 
+from messaging.views import brand_manager_messaging, influencer_messaging
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/influencer_signup/',influencer_signup, name='signup'),
-    path('api/influencer_login/', InfluencerLoginView.as_view(template_name='registration/influencer_login.html'), name='login'),
-    path('api/influencer_registration/', Influencer_Registration.as_view(), name='influencer_registration'),
-    path('api/users/', CustomUserListCreateView.as_view(), name='user-list-create'),
-    path('api/users/<int:pk>/', CustomUserDetailView.as_view(), name='user-detail'),
-    path('api/campaigns/create/', CampaignCreateView.as_view(), name='campaign-create'),
-    path('api/campaigns/', CampaignListView.as_view(), name='campaign-list'),
-    path('api/influencer_dashboard/', influencer_dashboard, name='influencer-dashboard'),
-    path('api/logout_influencer/', auth_views.LogoutView.as_view(), name='logout_influencer'),
-    path('api/brandmanager_signup/', brand_manager_signup, name='brand_manager_signup'),
-    path('api/brandmanager_login/', BrandManagerLoginView.as_view(template_name='registration/brandmanager_login.html'), name='brand_manager_login'),
-    path('api/logout_brandmanager/', auth_views.LogoutView.as_view(), name='logout_brandmanager'),
-    path('api/brandmanager_dashboard/', brand_manager_dashboard, name='brandmanager_dashboard'),
-    path('api/influencer_contentsubmission/', content_submission, name='content_submission'),
-    path('api/content_approval/', content_approval, name='content_approval'),
-    path('api/superadmin_dashboard/', superadmin_dashboard, name='superadmin_dashboard'),
-    path('api/manage_brand_managers', manage_brand_managers, name='manage_brand_managers'),
-    path('api/superadmin/signup/', SuperAdminSignupView.as_view(), name='superadmin_signup'),
-    path('api/superadmin/login/', LoginView.as_view(), name='superadmin_login'),
-    path('superadmin/logout/', LogoutView.as_view(), name='superadmin_logout'),
+    path("admin/", admin.site.urls),
+    path("api/influencer_signup/", influencer_signup, name="signup"),
+    path(
+        "api/influencer_login/",
+        InfluencerLoginView.as_view(template_name="registration/influencer_login.html"),
+        name="influencer_login",
+    ),
+    path(
+        "api/influencer_registration/",
+        Influencer_Registration.as_view(),
+        name="influencer_registration",
+    ),
+    path("api/users/", CustomUserListCreateView.as_view(), name="user-list-create"),
+    path("api/users/<int:pk>/", CustomUserDetailView.as_view(), name="user-detail"),
+    path("api/campaigns/create/", CampaignCreateView.as_view(), name="campaign-create"),
+    path("api/campaigns/", CampaignListView.as_view(), name="campaign-list"),
+    path(
+        "api/influencer_dashboard/", influencer_dashboard, name="influencer-dashboard"
+    ),
+    path(
+        "api/logout_influencer/",
+        auth_views.LogoutView.as_view(),
+        name="logout_influencer",
+    ),
+    path("api/brandmanager_signup/", brand_manager_signup, name="brand_manager_signup"),
+    path(
+        "api/brandmanager_login/",
+        BrandManagerLoginView.as_view(
+            template_name="registration/brandmanager_login.html"
+        ),
+        name="brand_manager_login",
+    ),
+    path(
+        "api/logout_brandmanager/",
+        auth_views.LogoutView.as_view(),
+        name="logout_brandmanager",
+    ),
+    path(
+        "api/brandmanager_dashboard/",
+        brand_manager_dashboard,
+        name="brandmanager_dashboard",
+    ),
+    path(
+        "api/influencer_contentsubmission/",
+        content_submission,
+        name="content_submission",
+    ),
+    path("api/content_approval/", content_approval, name="content_approval"),
+    path(
+        "api/superadmin_dashboard/", superadmin_dashboard, name="superadmin_dashboard"
+    ),
+    path(
+        "api/manage_brand_managers", manage_brand_managers, name="manage_brand_managers"
+    ),
+    path(
+        "api/superadmin/signup/",
+        SuperAdminSignupView.as_view(),
+        name="superadmin_signup",
+    ),
+    path("api/superadmin/login/", LoginView.as_view(), name="superadmin_login"),
+    path("superadmin/logout/", LogoutView.as_view(), name="superadmin_logout"),
+    path(
+        "api/brand_manager_messaging/<str:username>/",
+        brand_manager_messaging,
+        name="brand_manager_messaging",
+    ),
+    path(
+        "api/influencer-messaging/<str:username>/",
+        influencer_messaging,
+        name="influencer-messaging",
+    ),
 ]
-
-

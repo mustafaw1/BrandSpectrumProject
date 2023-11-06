@@ -1,50 +1,67 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
     <title>Influencer Dashboard</title>
-</head>
-<body>
-    <header>
-        <h1>Welcome, {{ influencer_name }}</h1>
-        <p>Age: {{ influencer_age }}</p>
-        <p>Category: {{ influencer.category }}</p>
-        <!-- Add more influencer information here -->
-    </header>
+  </head>
+  <body>
+    <h1>Welcome, {{ influencer_name }}</h1>
+    <p>Age: {{ influencer_age }}</p>
 
-    <main>
-        <section>
-            <h2>Your Campaigns</h2>
-            <ul>
-                {% for campaign in campaigns %}
-                    <li>
-                        <h3>{{ campaign.title }}</h3>
-                        <p>{{ campaign.description }}</p>
-                        <p>Status: {{ campaign.status }}</p>
-                        <p>Start Date: {{ campaign.start_date }}</p>
-                        <p>End Date: {{ campaign.end_date }}</p>
-                        <p>Media Type: {{ campaign.media_type }}</p>
-                        
-                        <!-- Display campaign image -->
-                        {% if campaign.image %}
-                            <img src="{{ campaign.image.url }}" alt="{{ campaign.title }} Image">
-                        {% endif %}
+    <!-- Display Messages -->
+    <div class="messages-container">
+      <h2>Messages</h2>
+      <div class="message-history">
+        <ul>
+          {% for message in messages %}
+          <li>{{ message.sender }}: {{ message.content }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="message-compose">
+        <form method="post">
+          {% csrf_token %}
+          <input
+            type="text"
+            name="recipient_username"
+            placeholder="Recipient username"
+          />
+          <textarea
+            name="message_content"
+            placeholder="Type your message"
+          ></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+    </div>
 
-                        <!-- Add more campaign details here -->
-                        {% if campaign.file %}
-                            <p><a href="{{ campaign.file.url }}" download>Download Media</a></p>
-                        {% endif %}
+    <!-- Your Campaigns Section -->
+    <h2>Your Campaigns</h2>
+    <ul>
+      {% for campaign in campaigns %}
+      <li>
+        <h3>{{ campaign.title }}</h3>
+        <p>{{ campaign.description }}</p>
+        <p>Status: {{ campaign.status }}</p>
+        <p>Start Date: {{ campaign.start_date }}</p>
+        <p>End Date: {{ campaign.end_date }}</p>
+        <p>Media Type: {{ campaign.media_type }}</p>
 
-                        <p>Feedback: {{ campaign.feedback }}</p>
-                    </li>
-                {% empty %}
-                    <li>No campaigns available.</li>
-                {% endfor %}
-            </ul>
-        </section>
-    </main>
+        <!-- Display campaign image -->
+        {% if campaign.image %}
+        <img src="{{ campaign.image.url }}" alt="{{ campaign.title }} Image" />
+        {% endif %}
 
-    <footer>
-        <!-- Footer content goes here -->
-    </footer>
-</body>
+        <!-- Add more campaign details here -->
+        {% if campaign.file %}
+        <p><a href="{{ campaign.file.url }}" download>Download Media</a></p>
+        {% endif %}
+
+        <p>Feedback: {{ campaign.feedback }}</p>
+      </li>
+      {% empty %}
+      <li>No campaigns available.</li>
+      {% endfor %}
+    </ul>
+  </body>
 </html>
