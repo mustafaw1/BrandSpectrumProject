@@ -1,0 +1,91 @@
+{% block content %}
+    <h1>Super Admin Dashboard</h1>
+
+    <section>
+        <h2>Influencer Pool</h2>
+        <form method="get" action="{% url 'superadmin_dashboard' %}">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+            
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age">
+            
+            <label for="children">Children:</label>
+            <input type="number" id="children" name="children">
+    
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category">
+            
+            <input type="submit" value="Search">
+        </form>
+    
+        <ul>
+            {% for influencer in influencers %}
+                <li>{{ influencer.name }} - {{ influencer.category }}</li>
+            {% empty %}
+                <li>No influencers match the search criteria.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- Include the Manage Brand Managers section -->
+    <section>
+        {% include 'registration/manage_brand_managers.html' %}
+    </section>
+
+
+    <section>
+        <h2>Active Campaigns</h2>
+        <ul>
+            {% for campaign in active_campaigns %}
+                <li>{{ campaign.title }} - {{ campaign.description }}</li>
+            {% empty %}
+                <li>No active campaigns available.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section>
+        <h2>Completed Campaigns</h2>
+        <ul>
+            {% for campaign in completed_campaigns %}
+                <li>{{ campaign.title }} - {{ campaign.description }}</li>
+            {% empty %}
+                <li>No completed campaigns available.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section>
+        <h2>Registered Influencers</h2>
+        <ul>
+            {% for influencer in registered_influencers %}
+                <li>{{ influencer.name }} - {{ influencer.category }}</li>
+            {% empty %}
+                <li>No registered influencers available.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section>
+        <h2>Non-Registered Influencers</h2>
+        <ul>
+            {% for influencer in non_registered_influencers %}
+                <li>{{ influencer.name }} - {{ influencer.category }}</li>
+            {% empty %}
+                <li>No non-registered influencers available.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section>
+        <h2>Brand Managers</h2>
+        <ul>
+            {% for manager in brand_managers %}
+                <li>{{ manager.name }} - {{ manager.company_name }}</li>
+            {% empty %}
+                <li>No brand managers available.</li>
+            {% endfor %}
+        </ul>
+    </section>
+{% endblock %}

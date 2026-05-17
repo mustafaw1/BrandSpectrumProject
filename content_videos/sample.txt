@@ -1,0 +1,5 @@
+This is a sample text file for testing Linux commands.
+It contains various lines of text to demonstrate commands.
+Feel free to add more text to this file.
+Linux commands are powerful tools for working with text.
+

@@ -1,0 +1,30 @@
+version: "3"
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: mustafa
+      POSTGRES_PASSWORD: 1214
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U mustafa -d mydb"]
+      interval: 5s
+      timeout: 1s
+      retries: 3
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sh -c "pipenv install && pipenv run python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
